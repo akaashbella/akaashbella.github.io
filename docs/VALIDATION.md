@@ -35,7 +35,7 @@ Screenshots, the browser result JSON, and a print PDF are uploaded as `portfolio
 - Text color pairs checked at WCAG AA contrast: the lowest reviewed text pair is rust on paper at 4.94:1.
 - Four local font faces total approximately 132 KB; all static assets total approximately 549 KB. No external font, analytics, or runtime data requests are required.
 - Poster dimensions are reserved, its source is credited, and font licenses are bundled.
-- Phone number removed from the downloadable supplied PDF using actual redaction; extracted text and phone-link absence checked. The original source PDF at the repository root is preserved and is outside the static site output.
+- Phone number removed from the downloadable supplied PDF using actual redaction; extracted text, phone-link absence, and absence of embedded attachments checked. The unredacted source is removed from current repository contents. Earlier Git versions remain pending an explicitly approved purge; see `PUBLICATION-SAFETY.md`.
 
 These automated and visual checks do not constitute a comprehensive assistive-technology or Core Web Vitals field audit. No production performance score, completed scientific experiment, or live deployment is claimed.
 

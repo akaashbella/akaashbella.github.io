@@ -10,8 +10,9 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "build": "astro build",
     "test:site": "node scripts/check-site.mjs",
+    "check:publication": "node scripts/check-publication.mjs",
     "test:browser": "python scripts/check-browser.py",
-    "verify": "npm run check && npm test && npm run build && npm run test:site",
+    "verify": "npm run check:publication && npm run check && npm test && npm run build && npm run test:site",
     "preview": "astro preview --host 0.0.0.0"
   },
   "dependencies": { "astro": "^7.4.2", "@astrojs/sitemap": "^3.6.0" },

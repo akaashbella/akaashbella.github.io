@@ -26,4 +26,4 @@ Original dimensions: 2500 × 1875. Local derivative: 1600 × 1200. The project R
 
 ## Resume
 
-`public/resume.pdf` derives from the user-supplied `Akaash_Bella_Resume.pdf` in the portfolio repository. The phone number was removed using PyMuPDF redaction and garbage collection, not merely visually covered. Remaining text and layout are the supplied document, so ResearchSeek wording can differ from the source-reconciled HTML resume. Do not replace it with an unredacted copy.
+`public/resume.pdf` derives from the owner-supplied resume reviewed during implementation. The unredacted source must remain outside the public repository. The phone number was removed using PyMuPDF redaction and garbage collection, not merely visually covered. Remaining text and layout are the supplied document, so ResearchSeek wording can differ from the source-reconciled HTML resume. Do not replace it with an unredacted copy. This is the only currently approved PDF path; additional PDFs require an explicit publication review and allowlist update.

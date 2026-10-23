@@ -4,7 +4,7 @@ Reviewed October 22, 2026. Source repositories were inspected read-only. Their c
 
 | Content | Primary evidence | Decision |
 | --- | --- | --- |
-| Education, experience, coursework, awards | `Akaash_Bella_Resume.pdf`, found on remote `main` after the initial local checkout | Follow the supplied professional history; omit phone number. |
+| Education, experience, coursework, awards | Owner-supplied resume reviewed before publication; unredacted source excluded from current public contents | Follow the supplied professional history; publish only the reviewed redacted PDF. |
 | CNN research | `alpha-sweep-training/README.md`, `docs/scientific-specification.md`, `src/alpha_sweep_training/perturbation.py` | Nine source steps do not demonstrate runtime correctness. No scientific findings, verified run completions, or performance curves. |
 | ResearchSeek | README, `docs/architecture.md`, `cpp/bindings.cpp`, repository tree | Stage 1 foundation. Indexing, embeddings, retrieval, and benchmarks remain planned, overriding the resume’s completion claims. |
 | AgBizLogic | README, `index.html`, original Expo poster | Akaash is group lead. Four-person team deliverables; Wizard-of-Oz prototype and proposal, not deployed production AI. Report published qualitative findings with attribution and no inferred significance. |
@@ -17,4 +17,4 @@ Reviewed October 22, 2026. Source repositories were inspected read-only. Their c
 
 Canonical repository links appear in each case study’s frontmatter. No project API calls run in the browser. Source-review dates describe this editorial review, not guarantees about future repository changes.
 
-The original source resume is preserved at the repository root; only the redacted copy under `public/` is included in the website build. HTML project status is reconciled as described above. A future update should revise the supplied resume itself if the owner wants all downloadable wording to match current implementation status.
+Keep original source documents privately outside the repository. Only `public/resume.pdf`, the reviewed redacted derivative, is approved for publication. HTML project status is reconciled as described above. Future resume revisions should reconcile implementation status and remove private information before replacing the published PDF. Earlier Git versions of the removed source still require the separately approved cleanup described in `PUBLICATION-SAFETY.md`.

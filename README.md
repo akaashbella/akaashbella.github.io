@@ -53,9 +53,9 @@ Every required page is generated as static HTML, including six project case stud
 
 ## Content and privacy
 
-The repository’s `Akaash_Bella_Resume.pdf` is the primary source for education and professional history. Latest public repository documentation takes precedence for project implementation status. In particular, the resume’s ResearchSeek completion language is reconciled to the current Stage 1 README in the HTML version. The downloadable PDF preserves the supplied resume’s content and layout, with the phone number actually redacted; it is not a replacement authored resume.
+The owner-supplied resume, reviewed before publication, is the primary source for education and professional history. Keep unredacted source documents outside this public repository. Only the reviewed, phone-redacted copy at `public/resume.pdf` belongs in the published content. Latest public repository documentation takes precedence for project implementation status; the HTML resume reconciles ResearchSeek to its current Stage 1 README.
 
-No private FitTrack source or fitness records are published. No upstream forks are presented as original projects. No scientific results are invented. The research visualization is an isolated example, not an execution of the research repository. The original source resume at the repository root is not copied into the built site.
+No private FitTrack source or fitness records are published. No upstream forks are presented as original projects. No scientific results are invented. The research visualization is an isolated example, not an execution of the research repository. Publication checks reject unreviewed PDF paths in tracked files, public assets, and build output. Removing a source document from current contents does not erase earlier Git versions; see the [publication-safety review and proposed history cleanup](docs/PUBLICATION-SAFETY.md).
 
 See [content evidence](docs/SOURCES.md), [asset provenance](docs/ASSETS.md), the [editing handoff](docs/HANDOFF.md), and the [validation record](docs/VALIDATION.md). Pull-request CI also audits dependencies and blocks known high/critical vulnerabilities.
 

@@ -5,6 +5,7 @@ const root = path.resolve('dist');
 async function walk(dir) { return (await Promise.all((await readdir(dir,{withFileTypes:true})).map(item=>item.isDirectory()?walk(path.join(dir,item.name)):path.join(dir,item.name)))).flat(); }
 const files = await walk(root);
 const pages = files.filter(file=>file.endsWith('.html'));
+assert.deepEqual(files.filter(file=>file.toLowerCase().endsWith('.pdf')).map(file=>path.relative(root,file)), ['resume.pdf'], 'Only the reviewed redacted PDF may appear in build output');
 const titles = new Set();
 const descriptions = new Set();
 for (const file of pages) {

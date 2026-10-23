@@ -20,6 +20,8 @@ Edit `src/data/profile.ts` for education, teaching, research, skills, and course
 
 Replace `public/resume.pdf` only with a real, verified resume. Remove the phone number with a genuine PDF redaction tool before publishing; a white rectangle alone is insufficient. Verify extracted PDF text and hyperlinks after redaction. Keep the HTML’s project status aligned with authoritative project documentation. The download is the supplied resume with phone redacted and may retain older project-status language; the HTML page explicitly explains the source difference.
 
+Keep the unredacted source outside this public repository, including outside its Git history. Do not commit it even in a temporary branch or under another filename. The original root filename is ignored to prevent accidental re-addition; publication checks allow only `public/resume.pdf` among tracked PDFs and only `resume.pdf` in build output. Any additional PDF needs a publication review before updating that allowlist. See `PUBLICATION-SAFETY.md` for the pending historical cleanup; ordinary deletion does not erase old commits.
+
 Use Print / Save as PDF on `/resume/` for the current HTML version. The print stylesheet suppresses navigation and controls and avoids splitting individual positions where practical.
 
 ## Change a homepage feature
