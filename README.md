@@ -6,7 +6,7 @@ Production target: <https://akaashbella.github.io>.
 
 ## Development
 
-Use Node 24 (Node 22.12+ is supported) and npm.
+Use Node 24 (Node 22.23.4+ is supported) and npm.
 
 ```sh
 npm ci

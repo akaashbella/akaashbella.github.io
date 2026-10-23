@@ -13,7 +13,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
+      - run: npm install
+      - name: Record updated dependency lock
+        run: |
+          echo CASCADIA_LOCK_BEGIN
+          cat package-lock.json
+          echo CASCADIA_LOCK_END
       - name: Inspect dependency audit
         run: |
           npm audit --json > /tmp/cascadia-audit.json || true
