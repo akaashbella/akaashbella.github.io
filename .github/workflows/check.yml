@@ -15,6 +15,24 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run verify
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install browser test driver
+        run: pip install playwright==1.58.0
+      - name: Test responsive layouts and accessibility interactions
+        run: |
+          python -m http.server 4321 --directory dist --bind 127.0.0.1 > /tmp/cascadia-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          python scripts/check-browser.py
+      - name: Upload browser review artifacts
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: portfolio-browser-review
+          path: test-results/
+          if-no-files-found: ignore
       - name: Export build for local visual verification
         if: success()
         run: |

@@ -2525,3 +2525,15 @@ td:last-child {
   font-family:var(--serif);
   line-height:1.15
 }
+@media (max-width:767px) {
+  .heatmap-panel>p {
+    font-size:11px;
+    min-height:54px;
+  }
+  .figure-key .meta {
+    font-size:10px;
+  }
+  .research-feature-copy .eyebrow,.feature-meta>.meta,.status-light,.research-feature-foot,.plate-note,.work-entry .eyebrow,.case-header .eyebrow,.case-meta dt,.prose .eyebrow,.contact-index .meta {
+    font-size:10px;
+  }
+}

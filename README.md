@@ -23,14 +23,14 @@ npm run verify
 
 This runs Astro/TypeScript checking, eight mathematical tests, the production build, and generated-site checks covering all routes, unique titles/descriptions, internal links and fragments, metadata, sitemap, and static assets. The mathematical tests independently check population deviation, known offsets, alpha-zero identity, deterministic noise, linear scaling, invalid input, and zero variance.
 
-For optional browser checks, install Python Playwright and provide Chromium at `/usr/bin/chromium` (both are available in the supplied Codex environment). In separate terminals:
+For local browser checks, install Python Playwright and provide Chromium or Google Chrome (both Playwright and Chromium are available in the supplied Codex environment). `BROWSER_EXECUTABLE` can select another browser binary. In separate terminals:
 
 ```sh
 npm run preview
 npm run test:browser
 ```
 
-Browser checks cover all content routes at 375, 768, 1024, and 1440 px; image loading; overflow; JavaScript and request errors; mobile-menu keyboard operation; slider keyboard behavior; reduced motion; skip navigation; print layout; and no-JavaScript access. Screenshots and a print PDF are written to ignored `test-results/`. These checks supplement, rather than establish, a comprehensive WCAG audit.
+Browser checks cover all content routes at 375, 768, 1024, and 1440 px; image loading; overflow; JavaScript and request errors; mobile-menu keyboard operation; slider keyboard behavior; reduced motion; skip navigation; print layout; and no-JavaScript access. Screenshots, a print PDF, and a JSON result are written to ignored `test-results/`. Pull-request CI runs the same browser checks and uploads review artifacts. These checks supplement, rather than establish, a comprehensive WCAG audit.
 
 ## Structure
 

@@ -3,13 +3,17 @@ No browser installation is needed on the supplied Codex environment.
 """
 from pathlib import Path
 import json
+import os
+import shutil
 from playwright.sync_api import sync_playwright
 
 origin = 'http://localhost:4321'
 routes = ['/', '/work/', '/research/', '/about/', '/resume/', '/contact/'] + ['/work/'+s+'/' for s in ['weight-perturbation','researchseek','agbizlogic','fittrack','mauka-energy','spotify-indiclid']]
 output = Path('test-results');output.mkdir(exist_ok=True)
 with sync_playwright() as p:
-    browser = p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+    executable = os.environ.get('BROWSER_EXECUTABLE') or shutil.which('chromium') or shutil.which('google-chrome')
+    assert executable, 'Install Chromium/Chrome or set BROWSER_EXECUTABLE'
+    browser = p.chromium.launch(executable_path=executable,args=['--no-sandbox'])
     page = browser.new_page()
     errors=[];failures=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
@@ -22,8 +26,10 @@ with sync_playwright() as p:
             page.goto(origin+route);page.evaluate('document.fonts.ready')
             assert page.locator('h1').count()==1,(route,width,'h1')
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),(route,width,'horizontal overflow')
-            assert page.locator('img').evaluate_all('(images)=>images.every(img=>img.complete && img.naturalWidth>0)'),(route,'broken image')
+            page.locator('img').evaluate_all('(images)=>images.forEach(img=>img.loading="eager")')
+            page.wait_for_function('Array.from(document.images).every(img=>img.complete && img.naturalWidth>0)')
         page.goto(origin+'/');page.evaluate('document.fonts.ready')
+        page.screenshot(path=str(output/f'home-cover-{width}.png'))
         page.screenshot(path=str(output/f'home-{width}.png'),full_page=True)
     page.set_viewport_size({'width':375,'height':850});page.goto(origin+'/')
     toggle=page.get_by_role('button',name='Index')
@@ -67,4 +73,6 @@ with sync_playwright() as p:
     assert plain.locator('[data-controls]').is_hidden()
     plain.get_by_text('Read the numeric tensor values').click();assert plain.locator('[data-numeric=perturbed]').first.is_visible()
     browser.close()
-    print(json.dumps({'routes':len(routes),'viewports':[375,768,1024,1440],'console_errors':errors,'network_failures':failures,'keyboard':'passed','reduced_motion':'passed','no_javascript':'passed','print':'passed'}))
+    result={'routes':len(routes),'viewports':[375,768,1024,1440],'console_errors':errors,'network_failures':failures,'keyboard':'passed','reduced_motion':'passed','no_javascript':'passed','print':'passed'}
+    (output/'browser-results.json').write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps(result))
