@@ -34,7 +34,7 @@ The contour geometry in `src/components/Contours.astro` is deterministic and ill
 
 ## Test locally
 
-Run `npm ci`, then `npm run verify`. Run `npm run preview` and the optional `npm run test:browser` if Python Playwright and Chromium are available. Review desktop and mobile screenshots, the research slider at zero and one, mobile-menu keyboard navigation, a no-JavaScript page, and the resume print preview.
+Run `npm ci`, then `npm run verify`. Run `npm run preview` and `npm run test:browser` if Python Playwright and Chromium or Chrome are available. `BROWSER_EXECUTABLE` selects a custom browser path. Pull-request CI runs the same browser checks, audits dependencies, and uploads screenshots and a print PDF. Review desktop and mobile screenshots, the research slider at zero and one, mobile-menu keyboard navigation, a no-JavaScript page, and the resume print preview.
 
 Add a new expected route in `scripts/check-site.mjs` when introducing a page and update the browser route list if appropriate. Test nontrivial new math against an independently known example rather than duplicating the implementation.
 

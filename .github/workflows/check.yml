@@ -13,18 +13,8 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm install
-      - name: Record updated dependency lock
-        run: |
-          echo CASCADIA_LOCK_BEGIN
-          cat package-lock.json
-          echo CASCADIA_LOCK_END
-      - name: Inspect dependency audit
-        run: |
-          npm audit --json > /tmp/cascadia-audit.json || true
-          echo CASCADIA_AUDIT_BEGIN
-          cat /tmp/cascadia-audit.json
-          echo CASCADIA_AUDIT_END
+      - run: npm ci
+      - run: npm audit --audit-level=high
       - run: npm run verify
       - uses: actions/setup-python@v6
         with:
@@ -44,10 +34,3 @@ jobs:
           name: portfolio-browser-review
           path: test-results/
           if-no-files-found: ignore
-      - name: Export build for local visual verification
-        if: success()
-        run: |
-          tar --exclude='dist/fonts' --exclude='dist/images' --exclude='dist/resume.pdf' -czf /tmp/cascadia-review.tgz dist
-          echo CASCADIA_BUILD_BEGIN
-          base64 /tmp/cascadia-review.tgz
-          echo CASCADIA_BUILD_END

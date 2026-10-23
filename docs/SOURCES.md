@@ -17,4 +17,4 @@ Reviewed October 22, 2026. Source repositories were inspected read-only. Their c
 
 Canonical repository links appear in each case study’s frontmatter. No project API calls run in the browser. Source-review dates describe this editorial review, not guarantees about future repository changes.
 
-The public original resume was added remotely after the environment’s initial checkout. It is preserved in the repository; only the redacted copy under `public/` is included in the website build. HTML project status is reconciled as described above. A future update should revise the supplied resume itself if the owner wants all downloadable wording to match current implementation status.
+The original source resume is preserved at the repository root; only the redacted copy under `public/` is included in the website build. HTML project status is reconciled as described above. A future update should revise the supplied resume itself if the owner wants all downloadable wording to match current implementation status.

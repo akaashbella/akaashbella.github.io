@@ -57,7 +57,7 @@ The repository’s `Akaash_Bella_Resume.pdf` is the primary source for education
 
 No private FitTrack source or fitness records are published. No upstream forks are presented as original projects. No scientific results are invented. The research visualization is an isolated example, not an execution of the research repository. The original source resume at the repository root is not copied into the built site.
 
-See [content evidence](docs/SOURCES.md), [asset provenance](docs/ASSETS.md), and the [editing handoff](docs/HANDOFF.md).
+See [content evidence](docs/SOURCES.md), [asset provenance](docs/ASSETS.md), the [editing handoff](docs/HANDOFF.md), and the [validation record](docs/VALIDATION.md). Pull-request CI also audits dependencies and blocks known high/critical vulnerabilities.
 
 ## GitHub Pages
 
