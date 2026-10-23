@@ -1,0 +1,21 @@
+name: Check portfolio
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm install
+      - name: Record initial dependency lock
+        run: |
+          echo CASCADIA_LOCK_BEGIN
+          cat package-lock.json
+          echo CASCADIA_LOCK_END
+      - run: npm run verify

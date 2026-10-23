@@ -1,0 +1,18 @@
+---
+interface Props { kind: string; }
+const { kind } = Astro.props;
+const diagrams: Record<string, {label:string;steps:string[];note:string}> = {
+  research: { label: 'Training & independent evaluation', steps: ['Clean master weights', 'Temporary noisy forward', 'Update clean parameters', 'Select by clean validation', 'Independent fixed-noise test'], note: 'Training refreshes noise per mini-batch. Each test realization holds noise fixed for the full pass.' },
+  search: { label: 'A local-first retrieval architecture', steps: ['Notes · .md / .txt', 'Discover → chunk → embed', 'SQLite + FTS5', 'C++ cosine top-k', 'Cited note passages'], note: 'Planned data path. Stage 1 implements the package, CLI surface, FTS5 probe, and native build diagnostic only.' },
+  agbiz: { label: 'Research before implementation', steps: ['Stakeholder interviews', 'Figma prototype', 'Wizard-of-Oz sessions', 'Feedback synthesis', 'Product recommendations'], note: 'A team research and design process; the prototype simulates assistance rather than deploying an AI backend.' },
+  mauka: { label: 'From technical mechanism to market', steps: ['Energy-aware routing', 'Customer & market study', 'Commercial model', 'Financial scenarios', 'Proposed rollout'], note: 'A commercialization proposal. Market projections and rollout milestones are assumptions, not realized business results.' },
+  spotify: { label: 'Multilingual playlist pipeline', steps: ['Spotify liked songs', 'Lyrics & metadata', 'IndicLID per-line inference', 'SQLite progress state', 'Language playlists / review'], note: 'A track may belong to multiple languages. Confidence thresholds govern automatic assignment and manual review.' },
+  fittrack: { label: 'A project kept personal', steps: ['Personal tracking', 'Fitness application', 'Private source'], note: 'Only the owner-provided project description is public. Architecture, authentication, integrations, and performance are unverified.' },
+};
+const diagram = diagrams[kind] ?? diagrams.search;
+---
+<figure class:list={['process-figure', `process-${kind}`]}>
+  <div class="figure-heading"><span class="meta">Process plate</span><p class="figure-title">{diagram.label}</p></div>
+  <ol class="process-steps">{diagram.steps.map((step, i) => <li><span class="meta">{String(i+1).padStart(2,'0')}</span><span>{step}</span></li>)}</ol>
+  <figcaption>{diagram.note}</figcaption>
+</figure>

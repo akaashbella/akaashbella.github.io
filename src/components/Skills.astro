@@ -1,0 +1,4 @@
+---
+import { skills } from '../data/profile';
+---
+<dl class="skills">{skills.map(skill => <div><dt>{skill.title}</dt><dd>{skill.items}</dd></div>)}</dl>
