@@ -14,6 +14,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Inspect dependency audit
+        run: |
+          npm audit --json > /tmp/cascadia-audit.json || true
+          echo CASCADIA_AUDIT_BEGIN
+          cat /tmp/cascadia-audit.json
+          echo CASCADIA_AUDIT_END
       - run: npm run verify
       - uses: actions/setup-python@v6
         with:
