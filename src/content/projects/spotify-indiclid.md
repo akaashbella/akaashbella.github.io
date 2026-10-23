@@ -2,7 +2,7 @@
 title: Spotify IndicLID
 summary: A multilingual pipeline that uses IndicLID to organize liked songs into Indian-language playlists, with explicit confidence and review paths.
 category: Independent project · language tooling
-period: 2026
+period: '2026'
 status: Source implemented · outcomes unverified
 role: Independent project developer
 technologies: [Python, IndicLID, SQLite, Spotify API, pandas]

@@ -12,10 +12,13 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - run: npm install
-      - name: Record initial dependency lock
-        run: |
-          echo CASCADIA_LOCK_BEGIN
-          cat package-lock.json
-          echo CASCADIA_LOCK_END
+          cache: npm
+      - run: npm ci
       - run: npm run verify
+      - name: Export build for local visual verification
+        if: success()
+        run: |
+          tar --exclude='dist/fonts' --exclude='dist/images' --exclude='dist/resume.pdf' -czf /tmp/cascadia-review.tgz dist
+          echo CASCADIA_BUILD_BEGIN
+          base64 /tmp/cascadia-review.tgz
+          echo CASCADIA_BUILD_END
