@@ -1,0 +1,43 @@
+---
+import { WEIGHTS, NOISE, populationStd, perturb, heatColor } from '../lib/perturbation';
+const alpha = 0.30;
+const perturbed = perturb(WEIGHTS, NOISE, alpha);
+const difference = perturbed.map((v, i) => v - WEIGHTS[i]);
+const panels = [{ key: 'baseline', title: 'Clean weights · W', values: WEIGHTS }, { key: 'perturbed', title: 'Temporary weights · W′', values: perturbed }, { key: 'difference', title: 'Difference · ΔW', values: difference }];
+---
+<figure class="perturbation" data-perturbation>
+  <div class="figure-heading"><span class="meta">Figure 01</span><h3>Perturbation field study</h3><span class="meta">6 × 6 example tensor</span></div>
+  <div class="heatmap-panels">{panels.map(panel => <div class="heatmap-panel"><p class="meta">{panel.title}</p><div class="heatmap" data-panel={panel.key} aria-hidden="true">{panel.values.map(value => <span style={`background:${heatColor(value)}`} title={value.toFixed(3)}></span>)}</div></div>)}</div>
+  <div class="figure-controls" data-controls hidden>
+    <label for="alpha">Perturbation strength <span class="math">α</span></label>
+    <input id="alpha" type="range" min="0" max="1" step="0.01" value={alpha} aria-describedby="alpha-help" />
+    <output for="alpha" id="alpha-value" aria-live="polite">α = 0.30</output>
+  </div>
+  <div class="figure-key"><span class="color-key" aria-hidden="true"></span><span class="meta">−2.2 &nbsp; / &nbsp; 0 &nbsp; / &nbsp; +2.2 · fixed color scale</span><span class="meta">σ(W) = {populationStd(WEIGHTS).toFixed(3)} · seed 2047</span></div>
+  <p id="alpha-help" class="caption">At α = 0, both weight tensors match. Increasing α scales one fixed Gaussian noise realization; the clean weights stay unchanged.</p>
+  <details class="tensor-data"><summary>Read the numeric tensor values</summary><p class="caption">Rows are listed left to right. Values are rounded to three decimals for display.</p><div class="table-scroll"><table><caption class="sr-only">Example weight tensor values</caption><thead><tr><th scope="col">Row</th><th scope="col">Clean weights</th><th scope="col">Temporary weights</th><th scope="col">Difference</th></tr></thead><tbody>{Array.from({length:6},(_,row) => <tr><th scope="row">{row+1}</th>{panels.map(panel=><td data-numeric={panel.key} data-row={row}>{panel.values.slice(row*6,row*6+6).map(v=>v.toFixed(3)).join(', ')}</td>)}</tr>)}</tbody></table></div></details>
+  <figcaption><strong>Conceptual visualization using example weights; not measured experimental results.</strong> This illustration does not train a neural network. Unlike this fixed illustration, training samples fresh noise for each mini-batch.</figcaption>
+  <noscript><p class="caption">JavaScript is off. The figure shows the fixed example at α = 0.30; all numeric values remain available above.</p></noscript>
+</figure>
+<script>
+  import { WEIGHTS, NOISE, perturb, heatColor } from '../lib/perturbation';
+  document.querySelectorAll<HTMLElement>('[data-perturbation]').forEach(figure => {
+    const slider = figure.querySelector<HTMLInputElement>('input');
+    const output = figure.querySelector<HTMLOutputElement>('output');
+    const controls = figure.querySelector<HTMLElement>('[data-controls]');
+    if (!slider || !output || !controls) return;
+    controls.hidden = false;
+    const update = () => {
+      const alpha = Number(slider.value);
+      const values = perturb(WEIGHTS, NOISE, alpha);
+      const differences = values.map((v, i) => v - WEIGHTS[i]);
+      output.value = `α = ${alpha.toFixed(2)}`;
+      for (const [key, tensor] of [['perturbed', values], ['difference', differences]] as const) {
+        figure.querySelectorAll<HTMLElement>(`[data-panel="${key}"] span`).forEach((cell, i) => { cell.style.background = heatColor(tensor[i]); cell.title = tensor[i].toFixed(3); });
+        figure.querySelectorAll<HTMLElement>(`[data-numeric="${key}"]`).forEach(cell => { const row = Number(cell.dataset.row); cell.textContent = tensor.slice(row * 6, row * 6 + 6).map(v => v.toFixed(3)).join(', '); });
+      }
+    };
+    slider.addEventListener('input', update);
+    update();
+  });
+</script>

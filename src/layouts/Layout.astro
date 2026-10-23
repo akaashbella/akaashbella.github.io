@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/profile';
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const links = [['Work', '/work/'], ['Research', '/research/'], ['About', '/about/'], ['Resume', '/resume/'], ['Contact', '/contact/']];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#F3F0E6" />
+    <title>{title} — Akaash Bella</title><meta name="description" content={description} />
+    <link rel="canonical" href={canonical} /><link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/newsreader-latin.woff" as="font" type="font/woff" crossorigin />
+    <meta property="og:type" content="website" /><meta property="og:site_name" content="Cascadia Field Notes" />
+    <meta property="og:title" content={`${title} — Akaash Bella`} /><meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} /><meta property="og:image" content={new URL('/images/social.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cascadia Field Notes. Akaash Bella. Studying systems. Building for people." />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="masthead wrap">
+      <a class="identity" href="/" aria-label="Akaash Bella, Field Notes home"><span class="monogram">AB</span><span>Field Notes<span class="identity-sub">Akaash Bella · Portland, OR</span></span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="navigation" hidden>Index <span aria-hidden="true">＋</span></button>
+      <nav id="navigation" aria-label="Main navigation">{links.map(([label, href]) => <a href={href} aria-current={Astro.url.pathname.startsWith(href) ? 'page' : undefined}>{label}</a>)}</nav>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="footer wrap">
+      <a class="identity" href="/"><span class="monogram">AB</span><span>Cascadia Field Notes<span class="identity-sub">Research, engineering & the in-between.</span></span></a>
+      <div class="footer-links"><a href={profile.github}>GitHub ↗</a><a href={profile.linkedin}>LinkedIn ↗</a><a href={`mailto:${profile.email}`}>Email ↗</a></div>
+      <p class="meta footer-colophon">© {new Date().getUTCFullYear()} Akaash Bella<br />Made with care in the Pacific Northwest.</p>
+    </footer>
+    <script>
+      const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+      const navigation = document.querySelector<HTMLElement>('#navigation');
+      if (toggle && navigation) {
+        toggle.hidden = false;
+        document.documentElement.classList.add('js');
+        const close = () => { toggle.setAttribute('aria-expanded', 'false'); navigation.classList.remove('is-open'); };
+        toggle.addEventListener('click', () => {
+          const open = toggle.getAttribute('aria-expanded') !== 'true';
+          toggle.setAttribute('aria-expanded', String(open)); navigation.classList.toggle('is-open', open);
+        });
+        document.addEventListener('keydown', event => { if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') { close(); toggle.focus(); } });
+        navigation.addEventListener('click', event => { if ((event.target as Element).closest('a')) close(); });
+      }
+    </script>
+  </body>
+</html>

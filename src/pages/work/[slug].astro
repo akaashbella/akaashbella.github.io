@@ -1,0 +1,21 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProjectDiagram from '../../components/ProjectDiagram.astro';
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map(project => ({ params: { slug: project.id }, props: { project } }));
+}
+const { project } = Astro.props;
+const { Content } = await render(project);
+const data = project.data;
+const ordered = (await getCollection('projects')).sort((a,b)=>a.data.priority-b.data.priority);
+const next = ordered[(ordered.findIndex(p=>p.id===project.id)+1)%ordered.length];
+---
+<Layout title={data.title} description={data.summary}>
+  <header class="case-header wrap"><a class="text-link" href="/work/">← Back to the work index</a><p class="eyebrow">Field study / {data.category}</p><h1>{data.title}</h1><p class="lede">{data.summary}</p><dl class="case-meta"><div><dt>Period</dt><dd>{data.period}</dd></div><div><dt>My role</dt><dd>{data.role}</dd></div><div><dt>Status</dt><dd>{data.status}</dd></div></dl><div class="case-links">{data.repository&&<a class="text-link" href={data.repository}>View source repository ↗</a>}{data.live&&<a class="text-link" href={data.live}>Visit project site ↗</a>}{project.id==='weight-perturbation'&&<a class="text-link" href="/research/">Read the research article →</a>}</div></header>
+  <div class="wrap case-figure"><ProjectDiagram kind={data.figure} /></div>
+  <div class="wrap article-grid"><aside class="article-margin"><span class="meta">In the field</span><p>{data.technologies.join(' / ')}</p><hr /><p class="caption">Source review<br /><time datetime={data.verified}>{data.verified}</time></p><a href="#references" class="text-link">Source notes ↓</a></aside><article class="prose"><Content /></article></div>
+  {project.id==='agbizlogic'&&<figure class="wrap full-poster"><a href="/images/agbiz-poster.webp"><img src="/images/agbiz-poster.webp" width="1600" height="1200" alt="AgBizLogic AI/UX capstone Expo poster presenting the team’s research process, prototype, and recommendations" loading="lazy" /></a><figcaption>Figure 02 — Original 2025 Capstone Expo poster. © Oregon State University and the AgBizLogic team. <a href={data.sources[2].url}>View the original source ↗</a></figcaption></figure>}
+  <section class="wrap references" id="references"><p class="eyebrow">References / Source record</p><h2>Follow the evidence.</h2>{data.sources.length ? <ul>{data.sources.map(source=><li><a href={source.url}>{source.label} ↗</a></li>)}</ul> : <p>Owner-supplied portfolio specification. No public technical source was available.</p>}<p class="caption">Status reflects the linked public sources at the date of review. Project runtime tests were not run for these case studies.</p></section>
+  <nav class="wrap next-project" aria-label="Project navigation"><a class="text-link" href="/work/">← All work</a><a href={`/work/${next.id}/`}><span class="meta">Next field study</span><span>{next.data.title} <span aria-hidden="true">→</span></span></a></nav>
+</Layout>

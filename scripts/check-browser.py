@@ -1,0 +1,88 @@
+"""Run against `npm run preview` at localhost:4321. Requires Python Playwright + Chromium.
+No browser installation is needed on the supplied Codex environment.
+"""
+from pathlib import Path
+import json
+import os
+import shutil
+from playwright.sync_api import sync_playwright
+
+origin = 'http://localhost:4321'
+routes = ['/', '/work/', '/research/', '/about/', '/resume/', '/contact/'] + ['/work/'+s+'/' for s in ['weight-perturbation','researchseek','agbizlogic','fittrack','mauka-energy','spotify-indiclid']]
+output = Path('test-results');output.mkdir(exist_ok=True)
+with sync_playwright() as p:
+    executable = os.environ.get('BROWSER_EXECUTABLE') or shutil.which('chromium') or shutil.which('google-chrome')
+    assert executable, 'Install Chromium/Chrome or set BROWSER_EXECUTABLE'
+    browser = p.chromium.launch(executable_path=executable,args=['--no-sandbox'])
+    page = browser.new_page()
+    errors=[];failures=[]
+    page.on('pageerror',lambda error:errors.append(str(error)))
+    page.on('console',lambda message:errors.append(message.text) if message.type=='error' else None)
+    page.on('requestfailed',lambda request:failures.append(request.url))
+    page.on('response',lambda response:failures.append(f'{response.status} {response.url}') if response.status>=400 else None)
+    for width in [375,768,1024,1440]:
+        page.set_viewport_size({'width':width,'height':1000})
+        for route in routes:
+            page.goto(origin+route);page.evaluate('document.fonts.ready')
+            assert page.locator('h1').count()==1,(route,width,'h1')
+            levels=page.locator('h1,h2,h3,h4,h5,h6').evaluate_all('(headings)=>headings.map(el=>Number(el.tagName[1]))')
+            assert all(current<=previous+1 for previous,current in zip(levels,levels[1:])),(route,'skipped heading level')
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),(route,width,'horizontal overflow')
+            page.locator('img').evaluate_all('(images)=>images.forEach(img=>img.loading="eager")')
+            page.wait_for_function('Array.from(document.images).every(img=>img.complete && img.naturalWidth>0)')
+        page.goto(origin+'/');page.evaluate('document.fonts.ready')
+        page.screenshot(path=str(output/f'home-cover-{width}.png'))
+        page.screenshot(path=str(output/f'home-{width}.png'),full_page=True)
+    page.set_viewport_size({'width':375,'height':850});page.goto(origin+'/')
+    toggle=page.get_by_role('button',name='Index')
+    assert toggle.is_visible()
+    toggle.focus();page.keyboard.press('Enter')
+    assert toggle.get_attribute('aria-expanded')=='true'
+    page.keyboard.press('Tab');assert page.evaluate('document.activeElement.textContent')=='Work'
+    page.keyboard.press('Escape');assert toggle.get_attribute('aria-expanded')=='false'
+    assert toggle.evaluate('(el)=>el===document.activeElement')
+    page.goto(origin+'/research/')
+    slider=page.get_by_role('slider',name='Perturbation strength')
+    slider.focus();page.keyboard.press('Home')
+    assert page.locator('#alpha-value').inner_text()=='α = 0.00'
+    clean=page.locator('[data-panel=baseline] span').evaluate_all('(els)=>els.map(el=>el.style.background)')
+    changed=page.locator('[data-panel=perturbed] span').evaluate_all('(els)=>els.map(el=>el.style.background)')
+    assert clean==changed
+    page.keyboard.press('End');assert slider.input_value()=='1'
+    assert page.locator('#alpha-value').inner_text()=='α = 1.00'
+    assert clean!=page.locator('[data-panel=perturbed] span').evaluate_all('(els)=>els.map(el=>el.style.background)')
+    page.keyboard.press('ArrowLeft');assert slider.input_value()=='0.99'
+    page.get_by_text('Read the numeric tensor values').click()
+    assert page.locator('[data-numeric=perturbed]').first.is_visible()
+    page.screenshot(path=str(output/'research-mobile.png'),full_page=True)
+    page.emulate_media(reduced_motion='reduce')
+    assert page.evaluate('getComputedStyle(document.documentElement).scrollBehavior')=='auto'
+    page.goto(origin+'/');page.keyboard.press('Tab')
+    assert page.locator('.poster-crop img').evaluate('(el)=>getComputedStyle(el).transitionDuration')=='0s'
+    assert page.evaluate('document.activeElement.textContent')=='Skip to content'
+    page.keyboard.press('Enter');assert page.evaluate('document.activeElement.id')=='main'
+    page.set_viewport_size({'width':1440,'height':1000});page.goto(origin+'/research/')
+    page.screenshot(path=str(output/'research-desktop.png'),full_page=True)
+    page.goto(origin+'/resume/');page.emulate_media(media='print')
+    assert not page.locator('.masthead').is_visible()
+    assert not page.locator('.resume-actions').is_visible()
+    page.pdf(path=str(output/'resume-print.pdf'),format='A4',print_background=True)
+    page.emulate_media(media='screen')
+    assert not errors,errors
+    assert not failures,failures
+    nojs=browser.new_context(java_script_enabled=False,viewport={'width':375,'height':850})
+    plain=nojs.new_page();plain.goto(origin+'/');assert plain.get_by_role('link',name='Research',exact=True).is_visible()
+    plain.goto(origin+'/research/');assert plain.get_by_text('Read the numeric tensor values').is_visible()
+    assert plain.locator('[data-controls]').is_hidden()
+    plain.get_by_text('Read the numeric tensor values').click();assert plain.locator('[data-numeric=perturbed]').first.is_visible()
+    touch=browser.new_context(viewport={'width':375,'height':850},is_mobile=True,has_touch=True)
+    touchpage=touch.new_page();touchpage.goto(origin+'/research/')
+    touchslider=touchpage.get_by_role('slider',name='Perturbation strength');touchslider.scroll_into_view_if_needed()
+    box=touchslider.bounding_box();touchpage.touchscreen.tap(box['x']+box['width']*.75,box['y']+box['height']/2)
+    assert float(touchslider.input_value())>.5
+    touchpage.goto(origin+'/');touchpage.get_by_role('button',name='Index').tap()
+    assert touchpage.get_by_role('link',name='Work',exact=True).is_visible()
+    browser.close()
+    result={'routes':len(routes),'viewports':[375,768,1024,1440],'console_errors':errors,'network_failures':failures,'keyboard':'passed','touch':'passed','heading_hierarchy':'passed','reduced_motion':'passed','no_javascript':'passed','print':'passed'}
+    (output/'browser-results.json').write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps(result))

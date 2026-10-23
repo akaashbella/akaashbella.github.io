@@ -1,0 +1,19 @@
+---
+interface Props { class?: string; }
+const { class: className = '' } = Astro.props;
+const paths = Array.from({ length: 27 }, (_, index) => {
+  const r = 34 + index * 8.5;
+  return Array.from({ length: 141 }, (_, n) => {
+    const t = n / 140 * Math.PI * 2;
+    const wave = 1 + 0.13 * Math.sin(t * 3 + index * 0.075) + 0.07 * Math.cos(t * 5 - index * 0.06) + 0.05 * Math.sin(t * 7);
+    const x = 300 + Math.cos(t) * r * wave * 0.96 + Math.sin(t * 2) * index * 1.3;
+    const y = 280 + Math.sin(t) * r * wave * 1.02;
+    return `${n === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ') + 'Z';
+});
+---
+<svg class:list={['contours', className]} viewBox="0 0 600 560" fill="none" aria-hidden="true">
+  <g stroke="currentColor" stroke-width="0.85">{paths.map((d, i) => <path d={d} opacity={i % 5 === 0 ? '0.85' : '0.45'} />)}</g>
+  <path d="M294 280h12m-6-6v12" stroke="currentColor" />
+  <circle cx="300" cy="280" r="14" stroke="currentColor" stroke-width="0.6" />
+</svg>

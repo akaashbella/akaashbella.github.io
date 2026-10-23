@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.env*
+!.env.example
+.DS_Store
+test-results/
+/Akaash_Bella_Resume.pdf

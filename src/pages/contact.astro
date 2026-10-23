@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Contours from '../components/Contours.astro';
+import { profile } from '../data/profile';
+---
+<Layout title="Contact" description="Contact Akaash Bella about research, software engineering, and collaboration. Based in Portland, Oregon. Email, GitHub, and verified LinkedIn links.">
+  <section class="contact-page wrap"><div class="contact-copy"><p class="eyebrow">06 / Correspondence</p><h1>Let’s compare<br /><em>field notes.</em></h1><p class="lede">For research questions, engineering opportunities, or a thoughtful exchange of ideas.</p><a class="contact-email" href={`mailto:${profile.email}`}>{profile.email} <span aria-hidden="true">↗</span></a><dl class="contact-index"><div><dt class="meta">01 / Code & projects</dt><dd><a href={profile.github}>GitHub ↗</a></dd></div><div><dt class="meta">02 / Professional background</dt><dd><a href={profile.linkedin}>LinkedIn ↗</a></dd></div><div><dt class="meta">03 / The short version</dt><dd><a href="/resume/">Resume →</a></dd></div></dl><p class="caption">Based in Portland, Oregon · Pacific time</p></div><figure class="contact-art"><Contours /><figcaption class="meta">A point of connection.<br />Illustrative contours / Cascadia Field Notes</figcaption></figure></section>
+</Layout>
